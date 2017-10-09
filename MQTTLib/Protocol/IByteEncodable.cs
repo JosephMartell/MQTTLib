@@ -4,10 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MQTTLib {
-    public enum QoSLevel : byte {
-        AtMostOnce = 0,
-        AtLeastOnce = 1,
-        ExactlyOnce = 2
+namespace MQTTLib.Protocol {
+    interface IByteEncodable {
+        IEnumerable<byte> Encode();
     }
 }

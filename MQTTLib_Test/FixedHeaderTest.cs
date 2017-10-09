@@ -2,6 +2,7 @@
 using System.Text;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MQTTLib.Protocol;
 using MQTTLib;
 using System.Linq;
 
@@ -11,85 +12,60 @@ namespace MQTTLib_Test {
     /// </summary>
     [TestClass]
     public class FixedHeaderTest {
-        public FixedHeaderTest() {
-            //
-            // TODO: Add constructor logic here
-            //
-        }
-
-        private TestContext testContextInstance;
-
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
-        public TestContext TestContext {
-            get {
-                return testContextInstance;
-            }
-            set {
-                testContextInstance = value;
-            }
-        }
-
-        #region Additional test attributes
-        //
-        // You can use the following additional attributes as you write your tests:
-        //
-        // Use ClassInitialize to run code before running the first test in the class
-        // [ClassInitialize()]
-        // public static void MyClassInitialize(TestContext testContext) { }
-        //
-        // Use ClassCleanup to run code after all tests in a class have run
-        // [ClassCleanup()]
-        // public static void MyClassCleanup() { }
-        //
-        // Use TestInitialize to run code before running each test 
-        // [TestInitialize()]
-        // public void MyTestInitialize() { }
-        //
-        // Use TestCleanup to run code after each test has run
-        // [TestCleanup()]
-        // public void MyTestCleanup() { }
-        //
-        #endregion
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void CannotCreateStandardPublishHeader() {
-            FixedHeader fh = FixedHeader.CreateStandardHeader(FixedHeader.ControlPacketType.PUBLISH);
+            FixedHeader fh = FixedHeader.CreateStandardHeader(FixedHeader.ControlPacketType.PUBLISH, 0);
         }
 
         [TestMethod]
         public void TestConnectPacketByteValues() {
-            FixedHeader fh = FixedHeader.CreateStandardHeader(FixedHeader.ControlPacketType.CONNECT);
+            EncodedRemainingLength erl = new EncodedRemainingLength(5);
+            FixedHeader fh = FixedHeader.CreateStandardHeader(FixedHeader.ControlPacketType.CONNECT, 20);
 
-            byte[] expectedBytes = new byte[] { 0x10 };
-            byte[] fhBytes = fh.ToBytes().ToArray();
+            List<byte> expectedBytes = new List<byte>();
+            expectedBytes.Add(0x10);
+            expectedBytes.AddRange(erl.Encode().ToArray());
+            
+            byte[] fhBytes = fh.Encode().ToArray();
 
-            Assert.AreEqual(expectedBytes.Length, fhBytes.Length);
-            Assert.AreEqual(expectedBytes[0], fhBytes[0]);
+            Assert.AreEqual(expectedBytes.Count, fhBytes.Length);
+            for (int i = 0; i < expectedBytes.Count; i++) {
+                Assert.AreEqual(expectedBytes[i], fhBytes[i]);
+            }
         }
 
         [TestMethod]
         public void TestUnsubscribePacketByteValues() {
-            FixedHeader fh = FixedHeader.CreateStandardHeader(FixedHeader.ControlPacketType.UNSUBSCRIBE);
+            FixedHeader fh = FixedHeader.CreateStandardHeader(FixedHeader.ControlPacketType.UNSUBSCRIBE, 0);
 
-            byte[] expectedBytes = new byte[] { 0xa2};
-            byte[] fhBytes = fh.ToBytes().ToArray();
+            byte[] expectedBytes = new byte[] { 0xa2, 0 };
+            byte[] fhBytes = fh.Encode().ToArray();
             Assert.AreEqual(expectedBytes.Length, fhBytes.Length);
             Assert.AreEqual(expectedBytes[0], fhBytes[0]);
         }
 
         [TestMethod]
         public void SubscribeWithDupQoS2Retain() {
-            FixedHeader fh = FixedHeader.CreatePublishHeader(true, QoSLevel.ExactlyOnce, true);
-            byte[] expectedBytes = new byte[] { 0x3d };
-            byte[] fhBytes = fh.ToBytes().ToArray();
+            FixedHeader fh = FixedHeader.CreatePublishHeader(true, QoSLevel.ExactlyOnce, true, 0);
+            byte[] expectedBytes = new byte[] { 0x3d, 0 };
+            byte[] fhBytes = fh.Encode().ToArray();
             Assert.AreEqual(expectedBytes.Length, fhBytes.Length);
             Assert.AreEqual(expectedBytes[0], fhBytes[0]);
         }
 
 
+        [TestMethod]
+        public void MSB() {
+            UInt16 packetID = 0xff88;
+            Assert.AreEqual(0xff, packetID.MostSignificantByte());
+
+        }
+
+        public void LSB() {
+            UInt16 packetID = 0xff88;
+            Assert.AreEqual(0x88, packetID.LeastSignificantByte());
+        }
     }
 }
