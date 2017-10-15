@@ -10,9 +10,9 @@ namespace MQTTLib {
         public QoSLevel QoS { get; }
         public bool Retain { get; }
         public string Topic { get; }
-        public string Message { get; }
+        public EncodedDataField Message { get; }
 
-        public Will(QoSLevel qos, bool retain, string topic, string message) {
+        public Will(QoSLevel qos, bool retain, string topic, EncodedDataField message) {
             QoS = qos;
             Retain = retain;
             Topic = topic;

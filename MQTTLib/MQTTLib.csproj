@@ -42,13 +42,26 @@
   <ItemGroup>
     <Compile Include="Authentication.cs" />
     <Compile Include="Client.cs" />
+    <Compile Include="Protocol\ConnAckVariableHeader.cs" />
+    <Compile Include="Protocol\ConnAckPacket.cs" />
     <Compile Include="Protocol\ConnectPacket.cs" />
+    <Compile Include="Protocol\ConnectPayload.cs" />
+    <Compile Include="Protocol\ConnectReturnCode.cs" />
+    <Compile Include="Protocol\ControlPacket.cs" />
+    <Compile Include="Protocol\ControlPacketFlags.cs" />
+    <Compile Include="Protocol\ControlPacketType.cs" />
+    <Compile Include="Protocol\EncodedDataField.cs" />
     <Compile Include="Protocol\EncodedRemainingLength.cs" />
+    <Compile Include="Protocol\EncodedString.cs" />
     <Compile Include="Protocol\FixedHeader.cs" />
     <Compile Include="Protocol\IByteEncodable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Protocol\Payload.cs" />
+    <Compile Include="Protocol\PublishVariableHeader.cs" />
     <Compile Include="Protocol\QoSLevel.cs" />
+    <Compile Include="Protocol\VariableHeader.cs" />
     <Compile Include="UINTExtensions.cs" />
+    <Compile Include="Protocol\ConnectVariableHeader.cs" />
     <Compile Include="Will.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

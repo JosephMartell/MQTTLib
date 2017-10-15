@@ -26,8 +26,8 @@ namespace MQTTLib {
         /// <param name="will">If a will is provided it will be passed to the server to be published upon this client's death.</param>
         /// <param name="auth">Authentication parameters passed to server</param>
         public void Connect(bool clean = true, Will will = null, Authentication auth = null, UInt16 keepAlive = 0) {
-            ConnectPacket cp = new ConnectPacket(ID, will);
-            _stream.Write(cp.Encode().ToArray(), 0, cp.Encode().Count());
+        //    ConnectPacket cp = new ConnectPacket(ID, will);
+        //    _stream.Write(cp.Encode().ToArray(), 0, cp.Encode().Count());
         }
 
     }

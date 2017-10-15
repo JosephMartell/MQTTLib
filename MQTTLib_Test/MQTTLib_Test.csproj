@@ -53,11 +53,17 @@
   </Choose>
   <ItemGroup>
     <Compile Include="AuthenticationTest.cs" />
-    <Compile Include="ConnectPacketTest.cs" />
+    <Compile Include="Protocol\ConnectPacketTest.cs" />
     <Compile Include="EncodedRemainingLengthTest.cs" />
     <Compile Include="MQTTClientTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FixedHeaderTest.cs" />
+    <Compile Include="Protocol\ConAckPacketTest.cs" />
+    <Compile Include="Protocol\ConAckVariableHeaderTest.cs" />
+    <Compile Include="Protocol\ConnectPayloadTest.cs" />
+    <Compile Include="Protocol\ConnectVariableHeaderTest.cs" />
+    <Compile Include="Protocol\EncodedDataFieldTest.cs" />
+    <Compile Include="Protocol\EncodedStringTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MQTTLib\MQTTLib.csproj">
