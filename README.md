@@ -1,6 +1,6 @@
 # MQTTLib
 
-This will be a C# implementation of MQTT based on standard v3.1.1 based on .Net Framework 4.6.1.  The current state of the project is very early in development.  This project is also my first attempt to incorporate unit testing into a project.
+This will be a C# implementation of MQTT based on standard v3.1.1 based on .Net Framework 4.6.1.  The current state of the project is very early in development.  This project is also my first attempt to incorporate unit testing.
 
 The MQTTLib namespace will eventually include client and server implementations that are fully compliant with MQTT standard v3.1.1.  This is the namespace that should be used most often by client code.
 
