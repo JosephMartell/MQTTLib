@@ -5,14 +5,18 @@ using System.Text;
 using MQTTLib.Protocol;
 using MQTTLib;
 using System.Collections.Generic;
+using System.IO;
 
-namespace MQTTLib_Test.Protocol {
+namespace MQTTLib_Test.Protocol
+{
     [TestClass]
-    public class EncodedStringTest {
+    public class EncodedStringTest
+    {
         private UTF8Encoding utf8 = new UTF8Encoding();
 
         [TestMethod]
-        public void ZeroLengthEncoded() {
+        public void Zero_length_string_encoded_without_error()
+        {
             EncodedString es = new EncodedString(string.Empty);
             Assert.AreEqual(0x00, es.Encode().First());
             Assert.AreEqual(0x00, es.Encode().Skip(1).First());
@@ -20,7 +24,8 @@ namespace MQTTLib_Test.Protocol {
         }
 
         [TestMethod]
-        public void MaxSpecLengthEncoded() {
+        public void Encoded_string_accepts_specified_max_lenth_string()
+        {
             //              12345678901234567890123
             string length23Test = "Test 1 length to be: 23";
             UInt16 MaxSpecLength = (UInt16) length23Test.Length;
@@ -32,7 +37,8 @@ namespace MQTTLib_Test.Protocol {
         }
 
         [TestMethod]
-        public void ExtendedLengthSupported() {
+        public void Encoded_string_supports_extended_length_string()
+        {
             string extendedLengthString = new string('x', 1000);
             UInt16 expectedLength = (UInt16) extendedLengthString.Length;
             byte[] esBytes = new EncodedString(extendedLengthString).Encode().ToArray();
@@ -41,7 +47,8 @@ namespace MQTTLib_Test.Protocol {
         }
 
         [TestMethod]
-        public void SpecCharsEncoded() {
+        public void Specified_character_set_encodes_correctly()
+        {
             //                    12345678901234567890123
             string encodeTest1 = "abcdefghijklmnopqrstuvw";
             string encodeTest2 = "xyzABCDEFGHIJKLMNOPQRST";
@@ -61,15 +68,16 @@ namespace MQTTLib_Test.Protocol {
         }
 
         [TestMethod]
-        public void DecodeByteArray() {
+        public void String_encoding_and_stream_decoding_are_equal()
+        {
             string testString1 = "This is a test string to be encoded";
-            List<byte> expectedBytes = new List<byte>();
-            expectedBytes.Add(((UInt16)testString1.Length).MostSignificantByte());
-            expectedBytes.Add(((UInt16)testString1.Length).LeastSignificantByte());
-            expectedBytes.AddRange(utf8.GetBytes(testString1));
+            List<byte> manuallyEncodedBytes = new List<byte>();
+            manuallyEncodedBytes.Add(((UInt16)testString1.Length).MostSignificantByte());
+            manuallyEncodedBytes.Add(((UInt16)testString1.Length).LeastSignificantByte());
+            manuallyEncodedBytes.AddRange(utf8.GetBytes(testString1));
 
 
-            EncodedString es = new EncodedString(expectedBytes);
+            EncodedString es = new EncodedString(new MemoryStream(manuallyEncodedBytes.ToArray()));
             Assert.AreEqual(testString1, es.Value);
             Assert.IsTrue(new EncodedString(testString1) == es);
         }

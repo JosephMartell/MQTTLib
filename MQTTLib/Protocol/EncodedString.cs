@@ -2,77 +2,77 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 using System.Threading.Tasks;
 using MQTTLib;
 
-namespace MQTTLib.Protocol {
+namespace MQTTLib.Protocol
+{
 
-    //TODO: Should this be a subclass of EncodedDataField? (Probably?)
-    public class EncodedString : IByteEncodable, IEquatable<EncodedString>, IComparable<EncodedString> {
-        public UInt16 Length {
-            get {
-                return (UInt16)Value.Length;
-            }
-        }
+    public class EncodedString : 
+        EncodedDataField, 
+        IByteEncodable, 
+        IEquatable<EncodedString>, 
+        IComparable<EncodedString>
+    {
         public string Value { get; }
-        public EncodedString(string value) {
+
+        public EncodedString(string value)
+            : base(new UTF8Encoding().GetBytes(value))
+        {
             Value = value;
         }
 
-        public EncodedString(IEnumerable<byte> bytes) {
-            UInt16 length = 0;
-            length = bytes.First();
-            length <<= 8;
-            length |= bytes.Skip(1).First();
-
+        public EncodedString(Stream byteStream)
+            : base(byteStream)
+        {
             UTF8Encoding utf8 = new UTF8Encoding();
-            Value = utf8.GetString(bytes.Skip(2).Take(length).ToArray());
-
+            Value = utf8.GetString(Data.ToArray());
         }
 
-        public IEnumerable<byte> Encode() {
-            UTF8Encoding utf8 = new UTF8Encoding();
-            List<byte> encodedBytes = new List<byte>();
-            encodedBytes.Add(Length.MostSignificantByte());
-            encodedBytes.Add(Length.LeastSignificantByte());
-            encodedBytes.AddRange(utf8.GetBytes(Value));
-            return encodedBytes;
-        }
-
-        public bool Equals(EncodedString other) {
+        public bool Equals(EncodedString other)
+        {
             return Value.Equals(other);
         }
 
-        public int CompareTo(EncodedString other) {
+        public int CompareTo(EncodedString other)
+        {
             return (Value.CompareTo(other));
         }
 
-        public static bool operator ==(EncodedString original, EncodedString other) {
+        public static bool operator ==(EncodedString original, EncodedString other)
+        {
             return (original.Value == other.Value) &&
                    (original.Length == other.Length);
         }
 
-        public static bool operator != (EncodedString original, EncodedString other) {
+        public static bool operator != (EncodedString original, EncodedString other)
+        {
             return !(original == other);
         }
 
-        public override bool Equals(object obj) {
+        public override bool Equals(object obj)
+        {
             return Value.Equals(obj);
         }
 
-        public override int GetHashCode() {
+        public override int GetHashCode()
+        {
             return Value.GetHashCode();
         }
 
-        public override string ToString() {
+        public override string ToString()
+        {
             return Value;
         }
 
-        public static implicit operator string(EncodedString s) {
+        public static implicit operator string(EncodedString s)
+        {
             return s.Value;
         }
 
-        public static implicit operator EncodedString(string s) {
+        public static implicit operator EncodedString(string s)
+        {
             return new EncodedString(s);
         }
     }
