@@ -63,6 +63,8 @@ namespace MQTTLib_Test {
 
         }
 
+        
+
         public void LSB() {
             UInt16 packetID = 0xff88;
             Assert.AreEqual(0x88, packetID.LeastSignificantByte());
