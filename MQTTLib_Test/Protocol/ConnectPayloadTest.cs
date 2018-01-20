@@ -5,6 +5,7 @@ using MQTTLib.Protocol;
 using MQTTLib;
 using System.Linq;
 using System.Collections.Generic;
+using System.IO;
 
 namespace MQTTLib_Test.Protocol {
     [TestClass]
@@ -19,19 +20,30 @@ namespace MQTTLib_Test.Protocol {
                 EncodedString clientID = "This is a client id";
                 IByteEncodable cp = new ConnectPayload(clientID);
 
-                EncodedString parsedEncodedString = new EncodedString(cp.Encode());
+                EncodedString parsedEncodedString = 
+                    new EncodedString(
+                        new MemoryStream(cp.Encode().ToArray()));
+
                 Assert.IsTrue(clientID == parsedEncodedString);
             }
 
             [TestMethod]
             public void WillTopicPresent() {
                 EncodedString willTopic = "Will Topic";
-                Will w = new Will(QoSLevel.AtMostOnce, false, willTopic.Value, new EncodedDataField(utf8.GetBytes("Will Message")));
+                Will w = 
+                    new Will(
+                        QoSLevel.AtMostOnce, 
+                        false, willTopic.Value, 
+                        new EncodedDataField(utf8.GetBytes("Will Message")));
+
                 EncodedString clientID = "test 1";
 
                 IByteEncodable cp = new ConnectPayload(clientID, w);
                 IEnumerable<byte> encodedBytes = cp.Encode();
-                EncodedString encodedTopic = new EncodedString(encodedBytes.Skip(clientID.Encode().Count()));
+                EncodedString encodedTopic = 
+                    new EncodedString(
+                        new MemoryStream(
+                            encodedBytes.Skip(clientID.Encode().Count()).ToArray()));
 
                 Assert.IsTrue(willTopic == encodedTopic);
             }
@@ -40,13 +52,17 @@ namespace MQTTLib_Test.Protocol {
             public void WillMsgPresent() {
                 EncodedString clientID = new EncodedString("test 1");
                 EncodedString willTopic = new EncodedString("Will Topic");
-                EncodedDataField willMsg = utf8.GetBytes("Will Message");
+                EncodedDataField willMsg = new EncodedDataField(utf8.GetBytes("Will Message"));
                 Will w = new Will(QoSLevel.AtMostOnce, false, willTopic, willMsg);
                 IByteEncodable cp = new ConnectPayload(clientID, w);
                 IEnumerable<byte> encodedBytes = cp.Encode();
-                string encodedMsg = utf8.GetString(new EncodedDataField(encodedBytes.Skip(clientID.Length + 2)
-                                                                                    .Skip(willTopic.Length + 4)
-                                                                                    .ToArray()));
+
+                string encodedMsg = utf8.GetString(
+                    new EncodedDataField(
+                        encodedBytes.Skip(clientID.Length + 2)
+                        .Skip(willTopic.Length + 4)
+                        .ToArray()));
+
                 Assert.IsTrue(utf8.GetString(willMsg.Data.ToArray()) == encodedMsg);
             }
 
@@ -57,7 +73,10 @@ namespace MQTTLib_Test.Protocol {
                 EncodedString clientID = "ClientID";
                 IByteEncodable cp = new ConnectPayload(clientID, null, auth);
                 IEnumerable<byte> encodedBytes = cp.Encode();
-                EncodedString encodedUsername = new EncodedString(encodedBytes.Skip(clientID.Encode().Count()));
+                EncodedString encodedUsername = 
+                    new EncodedString(
+                        new MemoryStream(
+                            encodedBytes.Skip(clientID.Encode().Count()).ToArray()));
 
                 Assert.IsTrue(username == encodedUsername);
 
