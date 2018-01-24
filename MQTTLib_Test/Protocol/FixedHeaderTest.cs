@@ -36,12 +36,12 @@ namespace MQTTLib_Test.Protocol
             {
                 FixedHeader connectFixedHeader =
                     FixedHeader.CreateStandardHeader(
-                        MQTTLib.Protocol.ControlPacketType.CONNECT,
+                        ControlPacketType.CONNECT,
                         0);
 
                 Assert.AreEqual(ControlPacketType.CONNECT, connectFixedHeader.Type);
                 Assert.AreEqual(
-                    ((byte)ControlPacketType.CONNECT) << 4,
+                    0x10,
                     connectFixedHeader.Encode().ToArray()[0]);
             }
             [TestMethod]
@@ -49,12 +49,12 @@ namespace MQTTLib_Test.Protocol
             {
                 FixedHeader connackFixedHeader =
                     FixedHeader.CreateStandardHeader(
-                        MQTTLib.Protocol.ControlPacketType.CONNACK,
+                        ControlPacketType.CONNACK,
                         0);
 
                 Assert.AreEqual(ControlPacketType.CONNACK, connackFixedHeader.Type);
                 Assert.AreEqual(
-                    ((byte)ControlPacketType.CONNACK) << 4,
+                    0x20,
                     connackFixedHeader.Encode().ToArray()[0]);
             }
             [TestMethod]
@@ -73,7 +73,7 @@ namespace MQTTLib_Test.Protocol
                     publishFixedHeader.Type);
 
                 Assert.AreEqual(
-                    ((byte)ControlPacketType.PUBLISH) << 4,
+                    0x30,
                     publishFixedHeader.Encode().ToArray()[0]);
             }
 
@@ -87,7 +87,7 @@ namespace MQTTLib_Test.Protocol
 
                 Assert.AreEqual(ControlPacketType.PUBACK, pubackFixedHeader.Type);
                 Assert.AreEqual(
-                    ((byte)ControlPacketType.PUBACK) << 4,
+                    0x40,
                     pubackFixedHeader.Encode().ToArray()[0]);
             }
 
@@ -96,13 +96,13 @@ namespace MQTTLib_Test.Protocol
             {
                 FixedHeader pubrecFixedHeader =
                     FixedHeader.CreateStandardHeader(
-                        MQTTLib.Protocol.ControlPacketType.PUBREC,
+                        ControlPacketType.PUBREC,
                         0);
                 ControlPacketType expectedType = ControlPacketType.PUBREC;
 
                 Assert.AreEqual(expectedType, pubrecFixedHeader.Type);
                 Assert.AreEqual(
-                    ((byte)expectedType) << 4,
+                    0x50,
                     pubrecFixedHeader.Encode().ToArray()[0]);
             }
 
@@ -111,14 +111,14 @@ namespace MQTTLib_Test.Protocol
             {
                 FixedHeader pubrelFixedHeader =
                     FixedHeader.CreateStandardHeader(
-                        MQTTLib.Protocol.ControlPacketType.PUBREL,
+                        ControlPacketType.PUBREL,
                         0);
                 ControlPacketType expectedType = ControlPacketType.PUBREL;
 
                 Assert.AreEqual(expectedType, pubrelFixedHeader.Type);
                 Assert.AreEqual(
-                    ((byte)expectedType) << 4,
-                    (0xf0) & pubrelFixedHeader.Encode().ToArray()[0]);
+                    0x62,
+                    pubrelFixedHeader.Encode().ToArray()[0]);
             }
 
             [TestMethod]
@@ -126,13 +126,13 @@ namespace MQTTLib_Test.Protocol
             {
                 FixedHeader pubcompFixedHeader =
                     FixedHeader.CreateStandardHeader(
-                        MQTTLib.Protocol.ControlPacketType.PUBCOMP,
+                        ControlPacketType.PUBCOMP,
                         0);
                 ControlPacketType expectedType = ControlPacketType.PUBCOMP;
 
                 Assert.AreEqual(expectedType, pubcompFixedHeader.Type);
                 Assert.AreEqual(
-                    ((byte)expectedType) << 4,
+                    0x70,
                     pubcompFixedHeader.Encode().ToArray()[0]);
             }
 
@@ -141,13 +141,13 @@ namespace MQTTLib_Test.Protocol
             {
                 FixedHeader subscribeFixedHeader =
                     FixedHeader.CreateStandardHeader(
-                        MQTTLib.Protocol.ControlPacketType.SUBSCRIBE,
+                        ControlPacketType.SUBSCRIBE,
                         0);
                 ControlPacketType expectedType = ControlPacketType.SUBSCRIBE;
 
                 Assert.AreEqual(expectedType, subscribeFixedHeader.Type);
                 Assert.AreEqual(
-                    ((byte)expectedType) << 4,
+                    0x82,
                     subscribeFixedHeader.Encode().ToArray()[0]);
             }
 
@@ -156,13 +156,13 @@ namespace MQTTLib_Test.Protocol
             {
                 FixedHeader subackFixedHeader =
                     FixedHeader.CreateStandardHeader(
-                        MQTTLib.Protocol.ControlPacketType.SUBACK,
+                        ControlPacketType.SUBACK,
                         0);
                 ControlPacketType expectedType = ControlPacketType.SUBACK;
 
                 Assert.AreEqual(expectedType, subackFixedHeader.Type);
                 Assert.AreEqual(
-                    ((byte)expectedType) << 4,
+                    0x90,
                     subackFixedHeader.Encode().ToArray()[0]);
             }
 
@@ -171,13 +171,13 @@ namespace MQTTLib_Test.Protocol
             {
                 FixedHeader unsubFixedHeader =
                     FixedHeader.CreateStandardHeader(
-                        MQTTLib.Protocol.ControlPacketType.UNSUBSCRIBE,
+                        ControlPacketType.UNSUBSCRIBE,
                         0);
                 ControlPacketType expectedType = ControlPacketType.UNSUBSCRIBE;
 
                 Assert.AreEqual(expectedType, unsubFixedHeader.Type);
                 Assert.AreEqual(
-                    ((byte)expectedType) << 4,
+                    0xa2,
                     unsubFixedHeader.Encode().ToArray()[0]);
             }
 
@@ -186,13 +186,13 @@ namespace MQTTLib_Test.Protocol
             {
                 FixedHeader unsubackFixedHeader =
                     FixedHeader.CreateStandardHeader(
-                        MQTTLib.Protocol.ControlPacketType.UNSUBACK,
+                        ControlPacketType.UNSUBACK,
                         0);
                 ControlPacketType expectedType = ControlPacketType.UNSUBACK;
 
                 Assert.AreEqual(expectedType, unsubackFixedHeader.Type);
                 Assert.AreEqual(
-                    ((byte)expectedType) << 4,
+                    0xb0,
                     unsubackFixedHeader.Encode().ToArray()[0]);
             }
 
@@ -207,7 +207,7 @@ namespace MQTTLib_Test.Protocol
 
                 Assert.AreEqual(expectedType, pingreqFixedHeader.Type);
                 Assert.AreEqual(
-                    ((byte)expectedType) << 4,
+                    0xc0,
                     pingreqFixedHeader.Encode().ToArray()[0]);
             }
 
@@ -222,7 +222,7 @@ namespace MQTTLib_Test.Protocol
 
                 Assert.AreEqual(expectedType, pingrespFixedHeader.Type);
                 Assert.AreEqual(
-                    ((byte)expectedType) << 4,
+                    0xd0,
                     pingrespFixedHeader.Encode().ToArray()[0]);
             }
 
@@ -237,7 +237,7 @@ namespace MQTTLib_Test.Protocol
 
                 Assert.AreEqual(expectedType, disconnectFixedHeader.Type);
                 Assert.AreEqual(
-                    ((byte)expectedType) << 4,
+                    0xe0,
                     disconnectFixedHeader.Encode().ToArray()[0]);
             }
 
