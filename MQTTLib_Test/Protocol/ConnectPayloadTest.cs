@@ -12,11 +12,11 @@ namespace MQTTLib_Test.Protocol {
     public class ConnectPayloadTest {
 
         [TestClass]
-        public class Encode {
+        public class EncodeMethod {
             UTF8Encoding utf8 = new UTF8Encoding();
 
             [TestMethod]
-            public void ClientIDPresent() {
+            public void Client_ID_encoded_correctly() {
                 EncodedString clientID = "This is a client id";
                 IByteEncodable cp = new ConnectPayload(clientID);
 
@@ -28,7 +28,7 @@ namespace MQTTLib_Test.Protocol {
             }
 
             [TestMethod]
-            public void WillTopicPresent() {
+            public void Will_topic_encoded_when_provided() {
                 EncodedString willTopic = "Will Topic";
                 Will w = 
                     new Will(
@@ -49,7 +49,7 @@ namespace MQTTLib_Test.Protocol {
             }
 
             [TestMethod]
-            public void WillMsgPresent() {
+            public void Will_msg_encoded_when_provided() {
                 EncodedString clientID = new EncodedString("test 1");
                 EncodedString willTopic = new EncodedString("Will Topic");
                 EncodedDataField willMsg = new EncodedDataField(utf8.GetBytes("Will Message"));
@@ -67,12 +67,13 @@ namespace MQTTLib_Test.Protocol {
             }
 
             [TestMethod]
-            public void Username() {
+            public void Username_encoded_when_provided() {
                 EncodedString username = new EncodedString("username");
                 Authentication auth = new Authentication(username);
                 EncodedString clientID = "ClientID";
                 IByteEncodable cp = new ConnectPayload(clientID, null, auth);
                 IEnumerable<byte> encodedBytes = cp.Encode();
+
                 EncodedString encodedUsername = 
                     new EncodedString(
                         new MemoryStream(
@@ -83,7 +84,7 @@ namespace MQTTLib_Test.Protocol {
             }
 
             [TestMethod]
-            public void Password() {
+            public void Password_encoded_when_provided() {
                 EncodedString clientID = "ClientID";
                 Authentication auth = new Authentication("username", "TestPassword");
                 ConnectPayload cp = new ConnectPayload(clientID, null, auth);

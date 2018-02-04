@@ -6,6 +6,9 @@ using System.Linq;
 using System.Collections.Generic;
 
 namespace MQTTLib_Test {
+
+
+    //Integration test - headers and payload tested individually
     [TestClass]
     public class ConnectPacketTest {
         System.Text.UTF8Encoding utf8 = new System.Text.UTF8Encoding();
@@ -22,7 +25,7 @@ namespace MQTTLib_Test {
         }
 
         [TestMethod]
-        public void CorrectFixedHeader() {
+        public void Packet_encodes_correct_fixed_header_bytes() {
             FixedHeader fh = FixedHeader.CreateStandardHeader(ControlPacketType.CONNECT, (UInt16)(cp.VariableHeader.Encode().Count() + cp.Payload.Encode().Count()));
             byte[] expectedBytes = fh.Encode().ToArray();
             for (int i = 0; i < expectedBytes.Count(); i++) {
@@ -31,7 +34,7 @@ namespace MQTTLib_Test {
         }
 
         [TestMethod]
-        public void VariableHeader() {
+        public void Packet_encodes_correct_variable_header_bytes() {
             ConnectVariableHeader cvh = new ConnectVariableHeader(w, auth, true, 5);
 
             var expectedBytes = cvh.Encode().ToArray();
@@ -41,7 +44,7 @@ namespace MQTTLib_Test {
         }
 
         [TestMethod]
-        public void Payload() {
+        public void Packet_encodes_correct_payload_bytes() {
             ConnectPayload payload = new ConnectPayload(clientID, w, auth);
             var expectedBytes = payload.Encode().ToArray();
 
